@@ -1,0 +1,55 @@
+# PASTE ME INTO https://sequencediagram.org/
+title Solution from config uploader to the conductor
+
+participant EDM
+participant Config Loader
+participant Config Loader Store
+
+participantgroup **Conductor Service**
+participant Event Handler
+participant Conductor Command Handler
+end
+
+EDM -#blue> Config Loader: Upload Zip
+
+loop#3477eb For each doc in zip
+Config Loader -#blue> Config Loader Store: Save doc (with some info removed)
+end
+
+Config Loader -#blue> Config Loader Store: Save Illustrator change sets
+
+activate Config Loader#yellow
+
+note over Config Loader#yellow: Synchronous parsing of the solution xml files
+
+loop For each solution in upload
+Config Loader -> Config Loader Store: Save solution model from parsed xml
+end
+
+
+
+
+Config Loader -> Event Handler : Notification of upload (by id)
+
+deactivate Config Loader
+
+Config Loader -#blue> EDM: Upload response
+
+
+
+activate Event Handler
+
+Event Handler -> Config Loader : Request listing of solutions for upload id 
+
+loop For each solution in upload
+Event Handler -> Config Loader : Request solution contents
+end
+
+
+
+Event Handler -> Conductor Command Handler: Send command to create solution
+
+deactivate Event Handler
+
+Conductor Command Handler -> Event Store: Persist Events
+
