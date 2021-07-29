@@ -1,0 +1,7 @@
+site_name: 'test-docs-as-code'
+
+nav:
+  - Home: README.md
+
+plugins:
+  - techdocs-core
